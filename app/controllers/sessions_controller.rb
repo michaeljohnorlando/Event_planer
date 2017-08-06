@@ -3,8 +3,8 @@ class SessionsController < ApplicationController
   def params_user
     params.require(:user).permit(:name, :password)
   end
-  def params_session
-    params.require(:session).permit(:session_id, :user_id)
+  def params_session(session_id,user_id)
+    params.permit(session_id, user_id)
   end
 
   def login # did this in the User controller and view...
@@ -18,17 +18,19 @@ class SessionsController < ApplicationController
       if @check.authenticate(@user.password)
         puts "\n the password entered is valid \n"
 
-
-        @session = Session.new
         # need to make shure there arent more then one
         # need a timmer to delete automaticly in a day or 2
+        @session = Session.new
         id  = SecureRandom.hex(64)
         @session.session_id = id
-        @session.user_id    = @user.id
-        puts " save? "
-        @session.save
-        puts " why rollback?"
-
+        puts "\n\nthe user id:  #{@check.id}\n\n"
+        @session.user_id    = @check.id
+        puts " save? #{@session.user_id}"
+         if @session.save
+           puts "save sucsessfull "
+         else
+           puts " not saved! "
+         end
 
         # Save ID and random temp hash in cookie
         cookies[:session_id] = id
