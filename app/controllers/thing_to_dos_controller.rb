@@ -7,6 +7,10 @@ class ThingToDosController < ApplicationController
     @thing_to_dos = ThingToDo.all
   end
 
+  # GET /thing_to_dos/homepage
+  def homepage
+  end
+
   # GET /thing_to_dos/1
   # GET /thing_to_dos/1.json
   def show

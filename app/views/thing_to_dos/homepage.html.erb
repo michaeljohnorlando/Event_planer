@@ -1,0 +1,5 @@
+<h1> This will be the home page </h1>
+
+<% @current_session = Session.find_by session_id: cookies[:session_id] %>
+<% @user = User.find_by id: @current_session.user_id %>
+<p><%= @user.name %>: is currently logged in</p>
