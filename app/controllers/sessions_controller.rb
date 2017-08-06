@@ -34,6 +34,7 @@ class SessionsController < ApplicationController
 
         # Save ID and random temp hash in cookie
         cookies[:session_id] = id
+        puts "#{cookies[:session_id]}"
         # go to homepage
         redirect_to '/Events/homepage'
       else
