@@ -1,5 +1,13 @@
 <h1> This will be the home page </h1>
 
+# This will be a controller... what layout to  display
 <% @current_session = Session.find_by session_id: cookies[:session_id] %>
-<% @user = User.find_by id: @current_session.user_id %>
-<p><%= @user.name %>: is currently logged in</p>
+<% if @current_session %>
+  <%  puts "your cookes session id matches one in the databace" %>
+  <%  @user = User.find_by id: @current_session.user_id %>
+  <p><%= @user.name %>: is currently logged in</p>
+<% else %>
+  <p><%=  "No User is loged in!" %></p>
+  <p>current: <%= @current_session %></p>
+  <p>session: <%=cookies[:session_id] %></p>
+<% end %>
