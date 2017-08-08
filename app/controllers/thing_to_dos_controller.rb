@@ -28,7 +28,16 @@ class ThingToDosController < ApplicationController
   # POST /thing_to_dos
   # POST /thing_to_dos.json
   def create
-    @thing_to_do = ThingToDo.new(thing_to_do_params)
+    session =  Session.find_by(session_id: cookies[:session_id])
+    user_id = session.user_id
+    puts "\n\nuser id: #{session.user_id}\n\n"
+    current_user = User.find_by(id: user_id)
+    @thing_to_do = current_user.thing_to_dos.create(thing_to_do_params)
+    # @current_session = Session.find_by session_id: cookies[:session_id]
+    puts " inserting user_id: #{@thing_to_do.user_id} \n\n"
+
+
+
 
     respond_to do |format|
       if @thing_to_do.save
@@ -73,6 +82,6 @@ class ThingToDosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def thing_to_do_params
-      params.require(:thing_to_do).permit(:name, :description, :attending)
+      params.require(:thing_to_do).permit(:name, :description, :attending, :user_id)
     end
 end
