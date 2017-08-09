@@ -1,31 +1,20 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Thing To Dos</h1>
+<h1>Events List</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Attending</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+  <% @thing_to_dos.each do |thing_to_do| %>
+    <div><br>
+      Name:<%= thing_to_do.name %><br>
+      Description:<%= thing_to_do.description %><br>
+      attending:<%= thing_to_do.attending.each { |print| puts print} %><br>
+      <%= link_to 'Show', thing_to_do %>
+      <% if session = Session.find_by(session_id: cookies[:session_id]) %>
+      <%= button_to "Attend", action: "add_person", :id => thing_to_do.id if session.user_id != nil%>
+      <% end %>
 
-  <tbody>
-    <% @thing_to_dos.each do |thing_to_do| %>
-      <tr>
-        <td><%= thing_to_do.name %></td>
-        <td><%= thing_to_do.description %></td>
-        <td><%= thing_to_do.attending %></td>
-        <td><%= link_to 'Show', thing_to_do %></td>
+        <!--
         <td><%= link_to 'Edit', edit_thing_to_do_path(thing_to_do) %></td>
         <td><%= link_to 'Destroy', thing_to_do, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Thing To Do', new_thing_to_do_path %>
+         -->
+    </div>
+  <% end %>

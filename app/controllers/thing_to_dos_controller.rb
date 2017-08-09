@@ -1,6 +1,15 @@
 class ThingToDosController < ApplicationController
   before_action :set_thing_to_do, only: [:show, :edit, :update, :destroy]
 
+  def add_person
+    session = Session.find_by(session_id: cookies[:session_id])
+    id      = session.user_id
+    puts " adding user_id #{id}\nto Event:#{params[:id]}"
+    event = ThingToDo.find_by(id: params[:id])
+    event.attending << id
+    event.save
+    redirect_to 'Events/homepage'
+  end
   # GET /thing_to_dos
   # GET /thing_to_dos.json
   def index
@@ -29,24 +38,26 @@ class ThingToDosController < ApplicationController
   # POST /thing_to_dos.json
   def create
     session =  Session.find_by(session_id: cookies[:session_id])
-    user_id = session.user_id
-    puts "\n\nuser id: #{session.user_id}\n\n"
-    current_user = User.find_by(id: user_id)
-    @thing_to_do = current_user.thing_to_dos.create(thing_to_do_params)
-    # @current_session = Session.find_by session_id: cookies[:session_id]
-    puts " inserting user_id: #{@thing_to_do.user_id} \n\n"
+    if session != nil
+      user_id = session.user_id
+      puts "\n\nuser id: #{session.user_id}\n\n"
+      current_user = User.find_by(id: user_id)
+      @thing_to_do = current_user.thing_to_dos.create(thing_to_do_params)
+      # @current_session = Session.find_by session_id: cookies[:session_id]
+      puts " inserting user_id: #{@thing_to_do.user_id} \n\n"
 
-
-
-
-    respond_to do |format|
-      if @thing_to_do.save
-        format.html { redirect_to @thing_to_do, notice: 'Thing to do was successfully created.' }
-        format.json { render :show, status: :created, location: @thing_to_do }
-      else
-        format.html { render :new }
-        format.json { render json: @thing_to_do.errors, status: :unprocessable_entity }
+      respond_to do |format|
+        if @thing_to_do.save
+          format.html { redirect_to @thing_to_do, notice: 'Thing to do was successfully created.' }
+          format.json { render :show, status: :created, location: @thing_to_do }
+        else
+          format.html { render :new }
+          format.json { render json: @thing_to_do.errors, status: :unprocessable_entity }
+        end
       end
+    else
+      puts "You need to be logged in to do that"
+      redirect_to '/thing_to_dos/new', :flash => { :alert => "You need to be logged in to do tha" }
     end
   end
 
@@ -82,6 +93,9 @@ class ThingToDosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def thing_to_do_params
-      params.require(:thing_to_do).permit(:name, :description, :attending, :user_id)
+      params.require(:thing_to_do).permit(:name, :description, :attending, :user_id, :attending)
+    end
+    def attend_params
+      params.require(:thing_to_dos).permit(:id)
     end
 end
